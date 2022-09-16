@@ -136,10 +136,10 @@ class CarState(CarStateBase):
   def update_canfd(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
-    if self.CP.flags & HyundaiFlags.CANFD_HDA2:
-      ret.gas = cp.vl["ACCELERATOR"]["ACCELERATOR_PEDAL"] / 255.
-    else:
+    if self.CP.flags & HyundaiFlags.CANFD_ALT_BUTTONS:
       ret.gas = cp.vl["ACCELERATOR_ALT"]["ACCELERATOR_PEDAL"] / 1023.
+    else:
+      ret.gas = cp.vl["ACCELERATOR"]["ACCELERATOR_PEDAL"] / 255.
     ret.gasPressed = ret.gas > 1e-5
     ret.brakePressed = cp.vl["BRAKE"]["BRAKE_PRESSED"] == 1
 
@@ -161,7 +161,7 @@ class CarState(CarStateBase):
     ret.standstill = ret.vEgoRaw < 0.1
 
     ret.steeringRateDeg = cp.vl["STEERING_SENSORS"]["STEERING_RATE"]
-    ret.steeringAngleDeg = cp.vl["STEERING_SENSORS"]["STEERING_ANGLE"] * -1
+    ret.steeringAngleDeg = cp.vl["MDPS"]["STEERING_ANGLE"] * -1
     ret.steeringTorque = cp.vl["MDPS"]["STEERING_COL_TORQUE"]
     ret.steeringTorqueEps = cp.vl["MDPS"]["STEERING_OUT_TORQUE"]
     ret.steeringPressed = abs(ret.steeringTorque) > self.params.STEER_THRESHOLD
@@ -390,7 +390,7 @@ class CarState(CarStateBase):
       ("BRAKE_PRESSED", "BRAKE"),
 
       ("STEERING_RATE", "STEERING_SENSORS"),
-      ("STEERING_ANGLE", "STEERING_SENSORS"),
+      ("STEERING_ANGLE", "MDPS"),
       ("STEERING_COL_TORQUE", "MDPS"),
       ("STEERING_OUT_TORQUE", "MDPS"),
 
@@ -421,25 +421,31 @@ class CarState(CarStateBase):
       ("DOORS_SEATBELTS", 4),
     ]
 
-    if CP.flags & HyundaiFlags.CANFD_HDA2:
-      signals += [
-        ("ACCELERATOR_PEDAL", "ACCELERATOR"),
-        ("GEAR", "ACCELERATOR"),
-        ("SET_SPEED", "CRUISE_INFO"),
-        ("CRUISE_STANDSTILL", "CRUISE_INFO"),
-      ]
-      checks += [
-        ("CRUISE_INFO", 50),
-        ("ACCELERATOR", 100),
-      ]
-    else:
+    if CP.flags & HyundaiFlags.CANFD_ALT_BUTTONS:
       signals += [
         ("ACCELERATOR_PEDAL", "ACCELERATOR_ALT"),
       ]
       checks += [
         ("ACCELERATOR_ALT", 100),
       ]
+    else:
+      signals += [
+        ("ACCELERATOR_PEDAL", "ACCELERATOR"),
+        ("GEAR", "ACCELERATOR"),
+      ]
+      checks += [
+        ("ACCELERATOR", 100),
+      ]
 
+    if CP.flags & HyundaiFlags.CANFD_HDA2:
+      signals += [
+        ("SET_SPEED", "CRUISE_INFO"),
+        ("CRUISE_STANDSTILL", "CRUISE_INFO"),
+      ]
+      checks += [
+        ("CRUISE_INFO", 50),
+      ]
+      
     bus = 5 if CP.flags & HyundaiFlags.CANFD_HDA2 else 4
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, bus)
 
