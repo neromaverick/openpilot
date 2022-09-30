@@ -1,7 +1,7 @@
 [submodule "panda"]
   path = panda
   url = ../../hoomoose/panda.git
-  branch = 0me
+  branch = hda1ev6i5
 [submodule "opendbc"]
   path = opendbc
   url = ../../commaai/opendbc.git
