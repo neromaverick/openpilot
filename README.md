@@ -5,7 +5,7 @@ After installing this fork you need to modify your Panda safety file otherwise y
 To do this you must 
 1. SSH into your device 
 2. run the command "nano panda/board/safety/safety_hyundai_canfd.h" to edit the file 
-3. make the changes seen here: 
+3. make the 4 additions and 4 deletions seen here (scroll to bottom of page): 
 https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
 4. Save changes and reboot your device with "sudo reboot"
 
