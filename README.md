@@ -1,3 +1,17 @@
+This fork is specifically for HDA 1 EV6 and Ioniq 5.
+
+After installing this fork you need to modify your Panda safety file otherwise you will get errors when you try to activate Cruise Control.
+
+To do this you must 
+1. SSH into your device 
+2. run the command "nano panda/board/safety/safety_hyundai_canfd.h" to edit the file 
+3. make the changes seen here: 
+https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
+4. Save changes and reboot your device with "sudo reboot"
+
+
+<br><br>
+
 ![](https://i.imgur.com/b0ZyIx5.jpg)
 
 Table of Contents
