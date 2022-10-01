@@ -1,4 +1,4 @@
-This fork is specifically for HDA 1 EV6 and Ioniq 5.
+This fork is specifically for EV6 and Ioniq 5 with HDA1 rather than HDA2.
 
 After installing this fork you need to modify your Panda safety file otherwise you will get errors when you try to activate Cruise Control.
 
