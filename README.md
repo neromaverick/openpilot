@@ -1,13 +1,24 @@
 This fork is specifically for EV6 and Ioniq 5 with HDA1 rather than HDA2.
 
-After installing this fork you need to modify your Panda safety file otherwise you will get errors when you try to activate Cruise Control.
+Here is the recommended method of installation (assuming you have already installed a Comma version of OP or dashcam mode):
+1. SSH in to your device
+2. Run the following command: 
+cd /data; rm -rf ./openpilot; git clone -b hda1ev6i5 --depth 1 --single-branch --recurse-submodules --shallow-submodules https://github.com/hoomoose/openpilot.git openpilot; cd openpilot; reboot; sudo reboot
+
+*CRITICAL - do not skip* <br>
+After installing this fork you need to verify that the Panda safety file was properly updated and, if not, modify your Panda safety file. Otherwise you will get errors when you try to activate Cruise Control.
 
 To do this you must 
 1. SSH into your device 
-2. run the command "nano panda/board/safety/safety_hyundai_canfd.h" to edit the file 
-3. make the 4 additions and 4 deletions seen here (scroll to bottom of page): 
+2. From the openpilot directory, run the command "cat panda/board/safety/safety_hyundai_canfd.h"
+3. Check the file for the 4 additions and 4 deletions seen here (scroll to bottom of page): 
 https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
-4. Save changes and reboot your device with "sudo reboot"
+4. If the changes are there, then you are good to go.
+5. If the changes are not there, run "nano panda/board/safety/safety_hyundai_canfd.h" to edit the file 
+6. Make the 4 additions and 4 deletions seen here (scroll to bottom of page): 
+https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
+*fyi the slightest typo will cause errors!*
+7. Save changes and reboot your device with "sudo reboot"
 
 
 <br><br>
