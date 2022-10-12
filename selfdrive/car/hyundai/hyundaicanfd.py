@@ -45,14 +45,14 @@ def create_buttons(packer, cnt, btn):
     "SET_ME_1": 1,
     "CRUISE_BUTTONS": btn,
   }
-  return packer.make_can_msg("CRUISE_BUTTONS", 5, values)
+  return packer.make_can_msg("CRUISE_BUTTONS", 6, values)
 
 def create_cruise_info(packer, cruise_info_copy, cancel):
   values = cruise_info_copy
   if cancel:
     values["CRUISE_STATUS"] = 0
     values["CRUISE_INACTIVE"] = 1
-  return packer.make_can_msg("CRUISE_INFO", 5, values)
+  return packer.make_can_msg("CRUISE_INFO", get_e_can_bus(CP), values)
 
 def create_lfahda_cluster(packer, CP, enabled):
   values = {
