@@ -464,7 +464,7 @@ class CarState(CarStateBase):
         ("ACCELERATOR", 100),
       ]
 
-    if not CP.openpilotLongitudinalControl & HyundaiFlags.CANFD_HDA2:
+    if CP.flags & HyundaiFlags.CANFD_HDA2:
       signals += [
         ("SET_SPEED", "CRUISE_INFO"),
         ("CRUISE_STANDSTILL", "CRUISE_INFO"),
