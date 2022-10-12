@@ -152,10 +152,10 @@ class CarState(CarStateBase):
   def update_canfd(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
-    if self.CP.flags & HyundaiFlags.CANFD_HDA2:
-      ret.gas = cp.vl["ACCELERATOR"]["ACCELERATOR_PEDAL"] / 255.
-    else:
+    if self.CP.flags & HyundaiFlags.CANFD_ALT_BUTTONS:
       ret.gas = cp.vl["ACCELERATOR_ALT"]["ACCELERATOR_PEDAL"] / 1023.
+    else:
+      ret.gas = cp.vl["ACCELERATOR"]["ACCELERATOR_PEDAL"] / 255.
     ret.gasPressed = ret.gas > 1e-5
     ret.brakePressed = cp.vl["BRAKE"]["BRAKE_PRESSED"] == 1
 
@@ -448,7 +448,14 @@ class CarState(CarStateBase):
       ("DOORS_SEATBELTS", 4),
     ]
 
-    if CP.flags & HyundaiFlags.CANFD_HDA2:
+    if CP.flags & HyundaiFlags.CANFD_ALT_BUTTONS:
+      signals += [
+        ("ACCELERATOR_PEDAL", "ACCELERATOR_ALT"),
+      ]
+      checks += [
+        ("ACCELERATOR_ALT", 100),
+      ]
+    else:
       signals += [
         ("ACCELERATOR_PEDAL", "ACCELERATOR"),
         ("GEAR", "ACCELERATOR"),
@@ -456,22 +463,16 @@ class CarState(CarStateBase):
       checks += [
         ("ACCELERATOR", 100),
       ]
-      if not CP.openpilotLongitudinalControl:
-        signals += [
-          ("SET_SPEED", "CRUISE_INFO"),
-          ("CRUISE_STANDSTILL", "CRUISE_INFO"),
-        ]
-        checks += [
-          ("CRUISE_INFO", 50),
-        ]
-    else:
+
+    if not CP.openpilotLongitudinalControl & HyundaiFlags.CANFD_HDA2:
       signals += [
-        ("ACCELERATOR_PEDAL", "ACCELERATOR_ALT"),
+        ("SET_SPEED", "CRUISE_INFO"),
+        ("CRUISE_STANDSTILL", "CRUISE_INFO"),
       ]
       checks += [
-        ("ACCELERATOR_ALT", 100),
+        ("CRUISE_INFO", 50),
       ]
-
+      
     bus = 5 if CP.flags & HyundaiFlags.CANFD_HDA2 else 4
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, bus)
 
