@@ -1,24 +1,28 @@
 This fork is specifically for EV6 and Ioniq 5 with HDA1 rather than HDA2.
 
 Here is the recommended method of installation (assuming you have already installed a Comma version of OP or dashcam mode):
-1. SSH in to your device
-2. Run the following command: 
-cd /data; rm -rf ./openpilot; git clone -b hda1ev6i5 --depth 1 --single-branch --recurse-submodules --shallow-submodules https://github.com/hoomoose/openpilot.git openpilot; cd openpilot; reboot; sudo reboot
+1. Make sure you already know how to and are able to SSH into your c3 before proceeding
+2. Download Openpilot Toolkit
+3. Use the change fork feature to install this fork: 
+      Fork Username: hoomoose 
+      Branch Name: hda1ev6i5
 
-*CRITICAL - do not skip* <br>
+*CRITICAL - Do Not Skip*<br> 
 After installing this fork you need to verify that the Panda safety file was properly updated and, if not, modify your Panda safety file. Otherwise you will get errors when you try to activate Cruise Control.
+To do this you must
+   1. SSH into your device 
+   2. From the openpilot directory, run the command "cat panda/board/safety/safety_hyundai_canfd.h"
+   3. Check the file for the 4 additions and 4 deletions seen here (scroll to bottom of page): 
+https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
+   4. If the changes are there, then you are good to go.
+   5. If the changes are not there, run "nano panda/board/safety/safety_hyundai_canfd.h" to edit the file 
+   6. Make the 4 additions and 4 deletions seen here (scroll to bottom of page): 
+https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
+   *fyi the slightest typo will cause errors!*
+   7. Save changes and reboot your device with "sudo reboot"
 
-To do this you must 
-1. SSH into your device 
-2. From the openpilot directory, run the command "cat panda/board/safety/safety_hyundai_canfd.h"
-3. Check the file for the 4 additions and 4 deletions seen here (scroll to bottom of page): 
-https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
-4. If the changes are there, then you are good to go.
-5. If the changes are not there, run "nano panda/board/safety/safety_hyundai_canfd.h" to edit the file 
-6. Make the 4 additions and 4 deletions seen here (scroll to bottom of page): 
-https://github.com/hoomoose/panda/compare/master...hoomoose:panda:hda1ev6i5
-*fyi the slightest typo will cause errors!*
-7. Save changes and reboot your device with "sudo reboot"
+Alternatively, you can install by SSH-ing into your device and running the following command (just as a warning, I got an error doing this one time, but it is the preferred method by many):
+cd /data; rm -rf ./openpilot; git clone -b hda1ev6i5 --depth 1 --single-branch --recurse-submodules --shallow-submodules https://github.com/hoomoose/openpilot.git openpilot; cd openpilot; reboot; sudo reboot
 
 
 <br><br>
