@@ -98,7 +98,7 @@ class CarController:
         elif CC.cruiseControl.resume:
           if not (self.CP.flags & HyundaiFlags.CANFD_ALT_BUTTONS):
             for _ in range(20):
-              can_sends.append(hyundaicanfd.create_buttons(self.packer, CS.buttons_counter+1, Buttons.RES_ACCEL))
+              can_sends.extend([hyundaicanfd.create_buttons(self.packer, CS.buttons_counter+1, Buttons.RES_ACCEL)] * 5)
             self.last_button_frame = self.frame
     else:
 
