@@ -347,11 +347,12 @@ class CarInterface(CarInterfaceBase):
 
   @staticmethod
   def init(CP, logcan, sendcan):
-    if CP.openpilotLongitudinalControl:
-      addr, bus = 0x7d0, 0
-      if CP.flags & HyundaiFlags.CANFD_HDA2.value:
-        addr, bus = 0x730, 5
-      disable_ecu(logcan, sendcan, bus=bus, addr=addr, com_cont_req=b'\x28\x83\x01')
+    if candidate not in CANFD_CAR or (CP.flags & HyundaiFlags.CANFD_HDA2.value):
+      if CP.openpilotLongitudinalControl:
+        addr, bus = 0x7d0, 0
+        if CP.flags & HyundaiFlags.CANFD_HDA2.value:
+          addr, bus = 0x730, 5
+        disable_ecu(logcan, sendcan, bus=bus, addr=addr, com_cont_req=b'\x28\x83\x01')
 
   def _update(self, c):
     ret = self.CS.update(self.cp, self.cp_cam)
