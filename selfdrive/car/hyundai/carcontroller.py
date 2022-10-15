@@ -82,18 +82,19 @@ class CarController:
     can_sends = []
 
     # *** common hyundai stuff ***
-
+    
+    # CAN-FD platforms
+    if self.CP.carFingerprint in CANFD_CAR:
+      hda1 = self.CP.flags & not HyundaiFlags.CANFD_HDA2
+      hda2 = self.CP.flags & HyundaiFlags.CANFD_HDA2
+      hda2_long = hda2 and self.CP.openpilotLongitudinalControl
+    
     # tester present - w/ no response (keeps relevant ECU disabled)
-    if self.frame % 100 == 0 and self.CP.openpilotLongitudinalControl:
+    if self.frame % 100 == 0 and self.CP.openpilotLongitudinalControl and not hda1:
       addr, bus = 0x7d0, 0
       if self.CP.flags & HyundaiFlags.CANFD_HDA2.value:
         addr, bus = 0x730, 5
       can_sends.append([addr, 0, b"\x02\x3E\x80\x00\x00\x00\x00\x00", bus])
-
-    # CAN-FD platforms
-    if self.CP.carFingerprint in CANFD_CAR:
-      hda2 = self.CP.flags & HyundaiFlags.CANFD_HDA2
-      hda2_long = hda2 and self.CP.openpilotLongitudinalControl
 
       # steering control
       can_sends.extend(hyundaicanfd.create_steering_messages(self.packer, self.CP, CC.enabled, CC.latActive, apply_steer))
@@ -107,7 +108,8 @@ class CarController:
         can_sends.append(hyundaicanfd.create_lfahda_cluster(self.packer, self.CP, CC.enabled))
 
       if self.CP.openpilotLongitudinalControl:
-        can_sends.extend(hyundaicanfd.create_adrv_messages(self.packer, self.frame))
+        if hda2
+          can_sends.extend(hyundaicanfd.create_adrv_messages(self.packer, self.frame))
         if self.frame % 2 == 0:
           can_sends.append(hyundaicanfd.create_acc_control(self.packer, self.CP, CC.enabled, accel, stopping, CC.cruiseControl.override,
                                                            set_speed_in_units))
