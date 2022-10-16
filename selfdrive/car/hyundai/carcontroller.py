@@ -85,7 +85,7 @@ class CarController:
     
     # CAN-FD platforms
     if self.CP.carFingerprint in CANFD_CAR:
-      hda1 = self.CP.flags & not HyundaiFlags.CANFD_HDA2
+      hda1 = self.CP.flags and not HyundaiFlags.CANFD_HDA2
       hda2 = self.CP.flags & HyundaiFlags.CANFD_HDA2
       hda2_long = hda2 and self.CP.openpilotLongitudinalControl
     
