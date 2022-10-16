@@ -347,7 +347,7 @@ class CarInterface(CarInterfaceBase):
 
   @staticmethod
   def init(CP, logcan, sendcan):
-    if candidate not in CANFD_CAR or (CP.flags & HyundaiFlags.CANFD_HDA2.value):
+    if candidate not in CANFD_CAR:
       if CP.openpilotLongitudinalControl:
         addr, bus = 0x7d0, 0
         if CP.flags & HyundaiFlags.CANFD_HDA2.value:
